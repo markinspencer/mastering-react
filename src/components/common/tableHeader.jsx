@@ -21,15 +21,26 @@ class TableHeader extends Component {
           {this.props.columns.map(column => (
             <th
               key={column.path || column.key}
-              onClick={() => this.raiseSort(column.path)}
+              onClick={() => {
+                if (column.path) this.raiseSort(column.path);
+              }}
             >
-              {column.label}
+              {column.label} {this.renderSortIcon(column)}
             </th>
           ))}
         </tr>
       </thead>
     );
   }
+
+  renderSortIcon = column => {
+    const { sortColumn } = this.props;
+    if (column.path !== sortColumn.path) return null;
+
+    if (sortColumn.order === "asc") return <i className="fa fa-sort-asc" />;
+
+    return <i className="fa fa-sort-desc" />;
+  };
 }
 
 export default TableHeader;
