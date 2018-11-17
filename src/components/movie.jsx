@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import Like from "./common/like";
+import { paginate } from "../utils/paginate";
+import Pagination from "./common/pagination";
 
 class Movie extends Component {
   state = {
-    movies: []
+    movies: [],
+    currentPage: 1,
+    pageSize: 4
   };
 
   constructor() {
     super();
+
     this.state.movies = getMovies().map(movie => {
       return { ...movie, isLiked: false };
     });
@@ -28,9 +33,15 @@ class Movie extends Component {
     this.setState({ movies });
   };
 
+  handlePageChange = currentPage => this.setState({ currentPage });
+
   render() {
     const { length: count } = this.state.movies;
+    const { currentPage, pageSize, movies: allMovies } = this.state;
+
     if (count === 0) return <p>There are no movies in the database. </p>;
+
+    const movies = paginate(allMovies, currentPage, pageSize);
 
     return (
       <React.Fragment>
@@ -46,14 +57,20 @@ class Movie extends Component {
               <th />
             </tr>
           </thead>
-          <tbody>{this.renderTableRows()}</tbody>
+          <tbody>{this.renderTableRows(movies)}</tbody>
         </table>
+        <Pagination
+          itemsCount={count}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        />
       </React.Fragment>
     );
   }
 
-  renderTableRows() {
-    return this.state.movies.map(movie => (
+  renderTableRows(movies) {
+    return movies.map(movie => (
       <tr key={movie._id}>
         <td> {movie.title} </td>
         <td> {movie.genre.name}</td>
