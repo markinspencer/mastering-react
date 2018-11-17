@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Like from "./common/like";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
+import MoviesTable from "./moviesTable";
 
 class Movie extends Component {
   state = {
@@ -79,19 +79,11 @@ class Movie extends Component {
         </div>
         <div className="col">
           <p>Showing {filteredMovies.length} in the database </p>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Genre</th>
-                <th>Stock</th>
-                <th>Rate</th>
-                <th />
-                <th />
-              </tr>
-            </thead>
-            <tbody>{this.renderTableRows(movies)}</tbody>
-          </table>
+          <MoviesTable
+            movies={movies}
+            onLike={this.handleLike}
+            onDelete={this.handleDelete}
+          />
           <Pagination
             itemsCount={filteredMovies.length}
             pageSize={pageSize}
@@ -101,31 +93,6 @@ class Movie extends Component {
         </div>
       </div>
     );
-  }
-
-  renderTableRows(movies) {
-    return movies.map(movie => (
-      <tr key={movie._id}>
-        <td> {movie.title} </td>
-        <td> {movie.genre.name}</td>
-        <td> {movie.numberInStock}</td>
-        <td> {movie.dailyRentalRate}</td>
-        <td>
-          <Like
-            onClick={() => this.handleLike(movie)}
-            isLiked={movie.isLiked}
-          />
-        </td>
-        <td>
-          <button
-            onClick={() => this.handleDelete(movie._id)}
-            className="btn btn-danger"
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    ));
   }
 }
 
