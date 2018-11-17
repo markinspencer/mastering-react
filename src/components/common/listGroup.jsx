@@ -14,7 +14,7 @@ const ListGroup = ({
       <ul className="list-group">
         {items.map(item => (
           <li
-            key={item[valueProperty]}
+            key={item[textProperty]}
             style={style}
             onClick={() => onItemSelect(item)}
             className={
