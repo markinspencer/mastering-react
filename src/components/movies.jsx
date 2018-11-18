@@ -7,7 +7,7 @@ import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
 
-class Movie extends Component {
+class Movies extends Component {
   state = {
     movies: [],
     genres: [],
@@ -129,4 +129,4 @@ class Movie extends Component {
   }
 }
 
-export default Movie;
+export default Movies;
