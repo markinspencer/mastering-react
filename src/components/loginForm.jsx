@@ -45,9 +45,7 @@ class LoginForm extends Form {
               onChange={this.handleChange}
             />
           </div>
-          <button disabled={this.validate()} className="btn btn-primary">
-            Login
-          </button>
+          {this.renderButton("Login")}
         </form>
       </div>
     );
