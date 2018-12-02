@@ -7,6 +7,7 @@ import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import { Link } from "react-router-dom";
 import _ from "lodash";
+import SearchBox from "./common/SearchBox";
 
 class Movies extends Component {
   state = {
@@ -14,6 +15,7 @@ class Movies extends Component {
     genres: [],
     currentPage: 1,
     pageSize: 4,
+    searchQuery: "",
     selectedGenre: null,
     sortColumn: { path: "title", order: "asc" }
   };
@@ -48,12 +50,29 @@ class Movies extends Component {
   handleGenreSelect = genre => {
     this.setState({
       currentPage: 1,
+      searchQuery: "",
       selectedGenre: genre
     });
   };
 
   handleSort = sortColumn => {
     this.setState({ sortColumn });
+  };
+
+  handleSearch = query => {
+    this.setState({
+      searchQuery: query,
+      selectedGenre: null,
+      currentPage: 1
+    });
+  };
+
+  searchMovies = movie => {
+    const { searchQuery } = this.state;
+
+    if (!searchQuery) return true;
+
+    return _.startsWith(_.lowerCase(movie.title), _.lowerCase(searchQuery));
   };
 
   getPagedData = () => {
@@ -70,16 +89,17 @@ class Movies extends Component {
         ? allMovies.filter(m => m.genre._id === selectedGenre._id)
         : allMovies;
 
+    const searchedMovies = filteredMovies.filter(this.searchMovies);
+
     const sortedMovies = _.orderBy(
-      filteredMovies,
+      searchedMovies,
       [sortColumn.path],
       [sortColumn.order]
     );
 
     const movies = paginate(sortedMovies, currentPage, pageSize);
-
     return {
-      totalCount: filteredMovies.length,
+      totalCount: searchedMovies.length,
       data: movies
     };
   };
@@ -91,7 +111,8 @@ class Movies extends Component {
       currentPage,
       genres,
       selectedGenre,
-      sortColumn
+      sortColumn,
+      searchQuery
     } = this.state;
 
     if (count === 0) return <p>There are no movies in the database. </p>;
@@ -113,6 +134,11 @@ class Movies extends Component {
               New Movie
             </Link>
             <p>Showing {totalCount} in the database </p>
+            <SearchBox
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={this.handleSearch}
+            />
             <MoviesTable
               movies={data}
               sortColumn={sortColumn}
