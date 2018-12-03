@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
-import { paginate } from "../utils/paginate";
-import { getMovies } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
-import { Link } from "react-router-dom";
-import _ from "lodash";
 import SearchBox from "./common/SearchBox";
+import _ from "lodash";
+import { Link } from "react-router-dom";
+import { getGenres } from "../services/genre.service";
+import { paginate } from "../utils/paginate";
+import { getMovies } from "../services/movie.service";
 
 class Movies extends Component {
   state = {
@@ -20,12 +20,13 @@ class Movies extends Component {
     sortColumn: { path: "title", order: "asc" }
   };
 
-  componentDidMount() {
-    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
+  async componentDidMount() {
+    const genres = await getGenres();
+    const updatedGenres = [{ _id: "", name: "All Genres" }, ...genres];
 
     this.setState({
-      genres,
-      movies: getMovies()
+      genres: updatedGenres,
+      movies: await getMovies()
     });
   }
 
