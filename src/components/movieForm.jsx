@@ -40,7 +40,7 @@ class MovieForm extends Form {
 
   componentDidMount = async () => {
     const { data } = this.state;
-    const genres = await getGenres();
+    const { data: genres } = await getGenres();
     this.setState({ genres });
 
     const movieId = this.props.match.params.id;
@@ -50,7 +50,7 @@ class MovieForm extends Form {
       return;
     }
 
-    const movie = await getMovie(movieId);
+    const { data: movie } = await getMovie(movieId);
     if (!movie) return this.props.history.replace("/not-found");
 
     this.mapToViewModel(movie);
