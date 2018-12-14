@@ -9,10 +9,10 @@ class MovieForm extends Form {
   state = {
     data: {
       _id: "",
-      title: "New Movie",
+      title: "",
       genreId: "",
-      numberInStock: "3",
-      dailyRentalRate: "3"
+      numberInStock: "",
+      dailyRentalRate: ""
     },
     genres: [],
     errors: {}
@@ -38,22 +38,32 @@ class MovieForm extends Form {
       .label("Daily Rental Rate")
   };
 
-  componentDidMount = async () => {
-    const { data } = this.state;
+  populateGenres = async () => {
     const { data: genres } = await getGenres();
     this.setState({ genres });
+  };
 
-    const movieId = this.props.match.params.id;
+  populateMovie = async () => {
+    try {
+      const { data, genres } = this.state;
+      const movieId = this.props.match.params.id;
 
-    if (movieId === "new") {
-      this.mapToViewModel({ ...data, genre: _.first(genres) });
-      return;
+      if (movieId === "new") {
+        this.mapToViewModel({ ...data, genre: _.first(genres) });
+        return;
+      }
+
+      const { data: movie } = await getMovie(movieId);
+      this.mapToViewModel(movie);
+    } catch (err) {
+      if (err.response && err.response.status === 404)
+        this.props.history.replace("/not-found");
     }
+  };
 
-    const { data: movie } = await getMovie(movieId);
-    if (!movie) return this.props.history.replace("/not-found");
-
-    this.mapToViewModel(movie);
+  componentDidMount = async () => {
+    await this.populateGenres();
+    await this.populateMovie();
   };
 
   mapToViewModel(movie) {
@@ -68,10 +78,6 @@ class MovieForm extends Form {
 
   doSubmit = async () => {
     await saveMovie(this.state.data);
-    this.props.history.push("/movies");
-  };
-
-  handleSave = () => {
     this.props.history.push("/movies");
   };
 
