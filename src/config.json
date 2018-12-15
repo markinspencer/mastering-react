@@ -1,4 +1,5 @@
 {
+  "USER_KEY": "token",
   "GENRE_ENDPOINT": "http://localhost:3900/api/genres",
   "MOVIE_ENDPOINT": "http://localhost:3900/api/movies",
   "USER_ENDPOINT": "http://localhost:3900/api/users",
