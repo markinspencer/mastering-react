@@ -119,6 +119,7 @@ class Movies extends Component {
 
   render() {
     const { length: count } = this.state.movies;
+    const { user } = this.props;
     const {
       pageSize,
       currentPage,
@@ -143,9 +144,11 @@ class Movies extends Component {
         </div>
         <div className="col">
           <React.Fragment>
-            <Link to="/movies/new" className="btn btn-primary mb-3">
-              New Movie
-            </Link>
+            {user && (
+              <Link to="/movies/new" className="btn btn-primary mb-3">
+                New Movie
+              </Link>
+            )}
             <p>Showing {totalCount} in the database </p>
             <SearchBox
               placeholder="Search..."
