@@ -11,11 +11,14 @@ export const loginWithJwt = jwt => localStorage.setItem(USER_KEY, jwt);
 
 export const logout = () => localStorage.removeItem(USER_KEY);
 
+export const getJwt = () => localStorage.getItem(USER_KEY);
+
 export const getCurrentUser = () => {
   try {
-    const jwt = localStorage.getItem(USER_KEY);
-    return jwtDecode(jwt);
+    return jwtDecode(getJwt());
   } catch (err) {
     return null;
   }
 };
+
+http.setJwt(getJwt());
