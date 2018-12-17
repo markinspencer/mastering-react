@@ -2,6 +2,8 @@ import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
 import { login } from "../services/auth.service";
+import { Redirect } from "react-router-dom";
+import { getCurrentUser } from "./../services/auth.service";
 
 class LoginForm extends Form {
   state = {
@@ -22,7 +24,9 @@ class LoginForm extends Form {
     try {
       const { username, password } = this.state.data;
       await login(username, password);
-      window.location = "/";
+
+      const { state } = this.props.location;
+      window.location = state ? state.from.pathname : "/";
     } catch (err) {
       if (err.response && err.response.status === 400) {
         const errors = { ...this.state.errors };
@@ -33,6 +37,7 @@ class LoginForm extends Form {
   };
 
   render() {
+    if (getCurrentUser()) return <Redirect to="/" />;
     return (
       <div>
         <h1>Login</h1>
