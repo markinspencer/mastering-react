@@ -1,9 +1,11 @@
 import http from "./http.service";
-import { USER_KEY, AUTH_ENDPOINT } from "../config.json";
+import { USER_KEY } from "../config.json";
 import jwtDecode from "jwt-decode";
 
+const apiEndpoint = "/auth";
+
 export const login = async (email, password) => {
-  const { data: jwt } = await http.post(AUTH_ENDPOINT, { email, password });
+  const { data: jwt } = await http.post(apiEndpoint, { email, password });
   localStorage.setItem(USER_KEY, jwt);
 };
 
